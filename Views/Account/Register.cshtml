@@ -1,0 +1,38 @@
+@model EventInitiatives.Mvc.Controllers.RegisterViewModel
+@{
+    Layout = null;
+}
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>إنشاء حساب - إدارة المنشورات والمبادرات</title>
+    <link rel="stylesheet" href="~/css/style.css" />
+</head>
+<body>
+    <section class="auth-screen">
+        <form asp-controller="Account" asp-action="Register" method="post" class="auth-card">
+            @Html.AntiForgeryToken()
+            <div class="auth-mark">✦</div>
+            <h1>إنشاء حساب جديد</h1>
+            <p>أنشئ حسابك للبدء في استخدام نظام إدارة المنشورات والمبادرات</p>
+            <div asp-validation-summary="ModelOnly" class="auth-error" role="alert"></div>
+            <label for="Email">البريد الإلكتروني
+                <input asp-for="Email" type="email" autocomplete="username" required placeholder="name@company.com" />
+                <span asp-validation-for="Email" class="auth-error"></span>
+            </label>
+            <label for="Password">كلمة المرور
+                <input asp-for="Password" type="password" autocomplete="new-password" required minlength="8" placeholder="8 أحرف على الأقل" />
+                <span asp-validation-for="Password" class="auth-error"></span>
+            </label>
+            <label for="ConfirmPassword">تأكيد كلمة المرور
+                <input asp-for="ConfirmPassword" type="password" autocomplete="new-password" required placeholder="أعد كتابة كلمة المرور" />
+                <span asp-validation-for="ConfirmPassword" class="auth-error"></span>
+            </label>
+            <button type="submit" class="primary">إنشاء الحساب</button>
+            <p class="auth-register-link">لديك حساب بالفعل؟ <a asp-controller="Account" asp-action="Login">تسجيل الدخول</a></p>
+        </form>
+    </section>
+</body>
+</html>

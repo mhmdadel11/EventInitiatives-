@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>إدارة المنشورات والمبادرات</title>
+  <meta name="theme-color" content="#102c46">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <section id="loginScreen" class="auth-screen">
+    <form id="loginForm" class="auth-card">
+      <div class="auth-mark">✦</div><h1>نظام إدارة المنشورات والمبادرات</h1><p>سجّل الدخول باستخدام حساب الموظف</p>
+      <label>البريد الإلكتروني<input id="loginEmail" type="email" autocomplete="username" required placeholder="name@company.com"></label>
+      <label>كلمة المرور<input id="loginPassword" type="password" autocomplete="current-password" required placeholder="••••••••"></label>
+      <button id="loginButton" type="submit" class="primary">تسجيل الدخول</button>
+      <div id="loginError" class="auth-error hidden" role="alert"></div>
+    </form>
+  </section>
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-icon">✦</span><div><b>EVENTS</b><small>إدارة المنشورات والمبادرات</small></div></div>
+    <button class="nav active" data-view="calendar">▦ <span>التقويم</span></button>
+    <button class="nav" data-view="events">☷ <span>كل المنشورات</span></button>
+    <button class="nav" data-view="add">＋ <span>إضافة منشور</span></button>
+  </aside>
+
+  <main class="main">
+    <header class="topbar"><div><h1 id="pageTitle">تقويم المنشورات</h1><small id="signedInAs" class="signed-in-as"></small></div><div class="topbar-actions"><button class="primary" id="topAdd">＋ إضافة منشور</button><button class="soft" id="logoutButton" type="button">تسجيل الخروج</button></div></header>
+    <section class="stats">
+      <article class="stat"><span class="stat-icon blue">▦</span><div><small>إجمالي المنشورات</small><strong id="totalCount">0</strong></div></article>
+      <article class="stat"><span class="stat-icon green">✓</span><div><small>تمت بنجاح</small><strong id="doneCount">0</strong></div></article>
+      <article class="stat"><span class="stat-icon red">×</span><div><small>لم تتم</small><strong id="notDoneCount">0</strong></div></article>
+      <article class="stat"><span class="stat-icon amber">◷</span><div><small>بانتظار التقييم</small><strong id="pendingCount">0</strong></div></article>
+    </section>
+
+    <section id="calendarView" class="panel">
+      <div class="panel-head calendar-head">
+        <div><h2>التقويم</h2><p>اضغط على أي منشور لعرض التفاصيل وتسجيل النتيجة.</p></div>
+        <div class="calendar-controls"><button id="prevMonth" class="icon-btn" aria-label="الشهر السابق">‹</button><strong id="monthLabel"></strong><button id="nextMonth" class="icon-btn" aria-label="الشهر التالي">›</button><button id="todayBtn" class="soft">اليوم</button></div>
+      </div>
+      <section class="event-pool" aria-label="قائمة المنشورات القابلة للسحب">
+        <div class="event-pool-head"><div><h3>المنشورات المضافة</h3><p>المنشور الجديد لا يظهر في التقويم تلقائيًا: اسحبه وضعه على اليوم المطلوب (أو اضغط عليه ثم اضغط على اليوم من الموبايل). وبعد وضعه على التقويم يختفي من هذا المربع، ولإرجاعه اسحبه من التقويم إلى هنا.</p></div><span id="poolCount" class="pool-count">0 منشور</span></div>
+        <div id="eventPool" class="event-pool-list"><div class="pool-empty">لا توجد منشورات مضافة حتى الآن.</div></div>
+      </section>
+      <div class="legend"><span><i class="dot blue-dot"></i> فعالية</span><span><i class="dot purple-dot"></i> مبادرة</span><span>✓ تمت</span><span>× لم تتم</span></div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </section>
+
+    <section id="eventsView" class="panel hidden">
+      <div class="panel-head events-panel-head">
+        <div><h2>كل المنشورات والمبادرات</h2><p>راجع البيانات أو عدّل النتيجة، أو أنشئ تقرير PDF شامل بكل المنشورات.</p></div>
+        <div class="events-toolbar">
+          <input id="searchInput" class="search" placeholder="ابحث باسم المنشور...">
+          <button id="allEventsPdf" class="primary">إنشاء تقرير بكل المنشورات PDF</button>
+        </div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>اسم المنشور</th><th>النوع</th><th>التاريخ</th><th>النتيجة</th><th>الإجراءات</th></tr></thead><tbody id="eventsTable"></tbody></table></div>
+      <div id="emptyEvents" class="empty hidden">لا توجد منشورات حتى الآن. ابدأ بإضافة منشور جديد.</div>
+    </section>
+
+    <section id="addView" class="panel hidden">
+      <div class="panel-head"><div><h2 id="formTitle">إضافة منشور / مبادرة</h2></div></div>
+      <form id="eventForm" class="form-grid">
+        <input type="hidden" id="eventId">
+        <label class="span-2">اسم المنشور أو المبادرة<input id="name" maxlength="120" placeholder="مثال: يوم الصحة والسلامة"></label>
+        <label>نوع النشاط<select id="type">
+          <option value="مبادرة">مبادرة</option>
+          <option value="فعالية">فعالية</option>
+          <option value="فيديو تسويقي">فيديو تسويقي</option>
+          <option value="مداخلة إذاعية">مداخلة إذاعية</option>
+          <option value="ستوري">ستوري</option>
+          <option value="منشورات توعوية">منشورات توعوية</option>
+        </select></label>
+        <label>الجهة المنظمة<input id="organizer" placeholder="اسم الإدارة أو القسم"></label>
+        <label>تاريخ المنشور<input id="startDate" type="date"></label>
+        <label class="span-2 image-upload-label">صور وفيديوهات المنشور أو المبادرة <input id="eventImage" type="file" accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov,.m4v" multiple><small>يمكنك اختيار صور وفيديوهات بأي عدد. الحد الأقصى 20 ميجابايت للصورة و50 ميجابايت للفيديو (MP4 أو WEBM أو MOV).</small></label>
+        <div id="uploadStatus" class="span-2 upload-status hidden"></div>
+        <div id="imagePreviewWrap" class="span-2 image-preview-wrap hidden"></div>
+        <label class="span-2">ملاحظات النتيجة<textarea id="notes" rows="3" placeholder="أضف ملاحظات أو سبب عدم التنفيذ..."></textarea></label>
+        <div class="form-actions span-2"><button type="button" class="soft" id="cancelForm">إلغاء</button><button type="submit" class="primary">حفظ المنشور</button></div>
+      </form>
+    </section>
+  </main>
+
+  <div class="modal-backdrop hidden" id="eventModal">
+    <div class="modal">
+      <button class="close" id="closeModal" aria-label="إغلاق">×</button>
+      <div class="modal-kicker" id="modalType">فعالية</div><h2 id="modalName"></h2><div class="modal-date" id="modalDate"></div>
+      <div id="modalImageWrap" class="modal-image-wrap hidden"></div><div class="detail-list" id="modalDetails"></div>
+      <div class="result-box"><h3>نتيجة التنفيذ</h3><div class="result-buttons">
+        <button class="result-btn success" id="markDone">✓ تمت بنجاح</button>
+        <button class="result-btn failure" id="markNotDone">× لم تتم</button>
+        <button class="result-btn pending" id="markPending">◷ لم تُقيّم بعد</button>
+      </div><label>ملاحظات النتيجة<textarea id="modalNotes" rows="2" placeholder="اكتب ملاحظات..."></textarea></label><button id="saveResult" class="primary full">حفظ النتيجة</button></div>
+      <div class="modal-actions"><button id="editEvent" class="soft">تعديل</button><button id="pdfEvent" class="primary">إنشاء تقرير PDF</button><button id="deleteEvent" class="danger">حذف</button></div>
+    </div>
+  </div>
+  <script src="/js/store.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
