@@ -1,0 +1,6 @@
+bin/
+obj/
+.vs/
+App_Data/uploads/
+appsettings.Development.json
+secrets.json
